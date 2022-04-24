@@ -1,0 +1,28 @@
+
+server:
+  port: "0"
+
+
+spring:
+  data:
+    mongodb:
+      database: test-distributed-systems
+      uri: mongodb+srv://aneeta:DIHEinstitute2@cluster0.sq9cc.mongodb.net/distributed-systems?retryWrites=true&w=majority
+      auto-index-creation: true
+
+app:
+  configs:
+    broker:
+      activemq:
+        url: "failover://tcp://localhost:61616"
+        username: "admin"
+        password: "password"
+    client:
+      ip: 127.0.0.1
+      email: unknown@domain.com
+      firstName: Unknown
+      lastName: Unknown
+    master:
+      host: http://localhost:9090
+      user-register:
+        endpoint: /api/v1/user
