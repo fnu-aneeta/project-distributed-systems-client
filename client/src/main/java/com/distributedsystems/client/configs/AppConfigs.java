@@ -2,6 +2,7 @@ package com.distributedsystems.client.configs;
 
 import com.distributedsystems.client.interceptors.HeaderClientPortRequestInterceptor;
 import com.distributedsystems.client.interceptors.HeaderRequestInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ public class AppConfigs {
 
     @Bean
     RestTemplate restTemplate(){
-        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new HeaderRequestInterceptor("Content-Type", MediaType.APPLICATION_JSON_VALUE));
         interceptors.add(new HeaderRequestInterceptor("x-client-ip", clientHostIp));
         interceptors.add(new HeaderClientPortRequestInterceptor());
@@ -31,5 +32,10 @@ public class AppConfigs {
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.setInterceptors(interceptors);
         return restTemplate;
+    }
+
+    @Bean
+    ObjectMapper objectMapper(){
+        return new ObjectMapper();
     }
 }
