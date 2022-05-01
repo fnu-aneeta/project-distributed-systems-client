@@ -1,5 +1,6 @@
 package com.distributedsystems.client.configs;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 
 import javax.jms.ConnectionFactory;
 import java.util.Arrays;
+import org.springframework.jms.core.JmsTemplate;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +30,7 @@ public class ActiveMqConfigs {
         activeMQConnectionFactory.setBrokerURL(url);
         activeMQConnectionFactory.setUserName(username);
         activeMQConnectionFactory.setPassword(password);
-        activeMQConnectionFactory.setTrustedPackages(Arrays.asList("com.distributedsystems.client"));
+        activeMQConnectionFactory.setTrustedPackages(List.of("com.distributedsystems.client"));
         return  activeMQConnectionFactory;
     }
     @Bean
@@ -37,5 +39,13 @@ public class ActiveMqConfigs {
         factory.setConnectionFactory(connectionFactory());
         factory.setPubSubDomain(false);
         return factory;
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate(){
+        JmsTemplate jmsTemplate = new JmsTemplate();
+        jmsTemplate.setConnectionFactory(connectionFactory());
+        jmsTemplate.setPubSubDomain(false);  // enable for Pub Sub to topic. Not Required for Queue.
+        return jmsTemplate;
     }
 }

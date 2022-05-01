@@ -1,6 +1,6 @@
 package com.distributedsystems.client.listener;
 
-import com.distributedsystems.client.resources.MessageResource;
+import com.distributedsystems.client.requests.MessageDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,24 +23,22 @@ public class FriendMessageListener implements MessageListener {
     @JmsListener(destination = "${app.configs.client.email}")
     public void onMessage(Message message) {
         try {
-            MessageResource messageResource;
+            MessageDetails messageDetails;
             if (message instanceof ActiveMQTextMessage) {
                 final ActiveMQTextMessage amqMessage = (ActiveMQTextMessage) message;
                 final String jsonStringMessage = amqMessage.getText();
-                messageResource = objectMapper.readValue(jsonStringMessage, MessageResource.class);
+                messageDetails = objectMapper.readValue(jsonStringMessage, MessageDetails.class);
             } else {
                 final BytesMessage bm = (BytesMessage) message;
                 final byte[] data = new byte[(int) bm.getBodyLength()];
                 bm.readBytes(data);
                 final String jsonStringMessage = new String(data);
-                messageResource = objectMapper.readValue(jsonStringMessage, MessageResource.class);
+                messageDetails = objectMapper.readValue(jsonStringMessage, MessageDetails.class);
             }
 
-            log.info("From: '{}'",
-                    messageResource.getFromEmail());
-
-            log.info("Received Message: '{}'",
-                    messageResource.getMessage());
+            log.info("Message from: '{}', message: {}",
+                messageDetails.getFromEmail(),
+                messageDetails.getBody());
         } catch (Exception e) {
             log.error("Received Exception : " + e);
             e.printStackTrace();
